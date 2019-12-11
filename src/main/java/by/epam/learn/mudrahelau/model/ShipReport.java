@@ -5,13 +5,13 @@ import java.time.LocalTime;
 /**
  * @author Viktar on 09.12.2019
  */
-public class Report {
+public class ShipReport {
 
     private long shipId;
     private int processingNumber;
 
 
-    public Report(long shipId, int processingNumber) {
+    public ShipReport(long shipId, int processingNumber) {
         this.shipId = shipId;
         this.processingNumber = processingNumber;
 
@@ -25,7 +25,7 @@ public class Report {
 
     @Override
     public String toString() {
-        return "Report: " +
+        return "ShipReport: " +
                 "Ship №" + shipId + " processed.";
     }
 }
