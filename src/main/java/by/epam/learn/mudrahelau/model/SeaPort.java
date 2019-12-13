@@ -22,91 +22,70 @@ public class SeaPort {
     private Warehouse warehouse = Warehouse.getInstance();
     private ContainerLoader containerLoader;
 
+    private static final SeaPort SEAPORT_INSTANCE = new SeaPort();
 
     public static SeaPort getInstance() {
-        if (seaPort == null) {
-            seaPort = new SeaPort();
-        }
-        return seaPort;
+        return SEAPORT_INSTANCE;
     }
 
 
     public ShipReport shipService(Ship ship) throws InterruptedException {
-//        lock.lock();
-
-//        ship.setShipState(ShipState.ON_UNLOAD);
 
         // три потока(корабли) одновременно заходят в порт
 
-
-        lock.lock();
         findFreePier(ship);
-        lock.unlock();
 
         return new ShipReport(ship.getId(), counter);
     }
 
+    public void findFreePier(Ship ship) {
+        Pier occupiedPier = null;
+        boolean flag = true;
+        System.out.println("> Ship #" + ship.getId() + " is looking for free pier...");
+        do {
+            for (Pier pier : piers) {
+                if (pier.getPierState() == PierState.FREE) {
+                    pier.setPierState(PierState.OCCUPIED);
+                    occupiedPier = pier;
+                    flag = false;
+                    break;
+                }
+            }
+        } while (flag);
+        try {
+            occupiedPier.getLock().lock();
 
-    public LoaderReport startLoaderWork(Ship ship, ContainerLoader containerLoader, Pier pier) {
+            startLoaderWork(ship, occupiedPier);
 
-        pier.getLock().lock();
+        } finally {
+            occupiedPier.getLock().unlock();
+        }
+
+    }
+
+
+    public LoaderReport startLoaderWork(Ship ship, Pier pier) {
+        containerLoader = ContainerLoader.getInstance();
         try {
             TimeUnit.SECONDS.sleep(1);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        containerLoader.getLock().lock();
         //  если у корабля статус "На разгрузку", то перекидываем контейнеры с корабля на склад.
         if (ship.getShipState() == ShipState.ON_UNLOAD) {
-            System.out.println("Started unload containers for ship # " + ship.getId());
 
-            //копируем контейнеры с корабля, затем закидываем их в склад, а в кораблях просто удаляем их
-            List<Container> containerList = new ArrayList<>(ship.getContainersWarehouse());
-            for (Container container : containerList) {
-                if(warehouse.checkIsWarehouseHasFreeSpace()){
-                warehouse.loadContainer(container);
-                }
-                else {
-                    System.out.println("WAREHOUSE IS FULL");
-                }
-                ship.getContainersWarehouse().removeAll(containerList);
-            }
-            System.out.println("Ship " + ship.getId() + " finished unloading.");
-        }else if(ship.getShipState() == ShipState.ON_LOAD){
+            containerLoader.unloadContainersFromShip(ship);
+
+        } else if (ship.getShipState() == ShipState.ON_LOAD) {
             //здесь будет погрузка на корабль
-            System.out.println(warehouse.getContainersWarehouse().size());
-            warehouse.getContainersWarehouse().remove(0);
-            warehouse.getContainersWarehouse().remove(1);
-            warehouse.getContainersWarehouse().remove(2);
-            warehouse.getContainersWarehouse().remove(3);
-            warehouse.getContainersWarehouse().remove(4);
-            System.out.println("Ship " + ship.getId() + " finished loading.");
+            containerLoader.loadContainersToShip(ship);
         }
 
-
-        containerLoader.getLock().unlock();
-        pier.getLock().unlock();
         pier.setPierState(PierState.FREE);
+
         return new LoaderReport(ship.getId());
     }
 
-    public void findFreePier(Ship ship){
-        Pier occupiedPier = null;
-        boolean flag = true;
-        System.out.println("> Ship #" + ship.getId() + " is looking for free pier...");
-        do{
-            for (Pier pier : piers) {
-                if(pier.getPierState() == PierState.FREE){
-                    pier.setPierState(PierState.OCCUPIED);
-                    occupiedPier = pier;
-                    flag = false;
-                }
-            }
-        }while (flag);
-
-        startLoaderWork(ship, ContainerLoader.instance, occupiedPier);
-    }
 
     public void addPier(Pier pier) {
         piers.add(pier);

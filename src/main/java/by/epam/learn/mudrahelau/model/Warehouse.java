@@ -35,15 +35,6 @@ public class Warehouse {
 
     public void loadContainer(Container container) {
         lock.lock();
-        while (containersWarehouse.size() == warehouseCapacity) {
-            System.out.println("NO FREE SPACE ON THE WAREHOUSE");
-            try {
-                condition.await();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        condition.signalAll();
         containersWarehouse.add(container);
         lock.unlock();
     }
@@ -54,7 +45,7 @@ public class Warehouse {
         lock.unlock();
     }
 
-    public boolean checkIsWarehouseHasFreeSpace() {
+    public boolean hasFreeSpace() {
         return containersWarehouse.size() < warehouseCapacity;
     }
 

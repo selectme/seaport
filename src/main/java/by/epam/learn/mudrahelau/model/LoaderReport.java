@@ -1,5 +1,8 @@
 package by.epam.learn.mudrahelau.model;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -16,6 +19,9 @@ public class LoaderReport {
     public LoaderReport(long shipId) {
         this.shipId = shipId;
     }
+
+
+
 
 
     @Override

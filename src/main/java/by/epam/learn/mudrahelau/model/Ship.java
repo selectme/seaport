@@ -15,18 +15,19 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Ship implements Callable<ShipReport> {
 
     private Long id;
-    private int containerCapacity;
+    private int containersOnBoard;
+    private int capacity;
     private SeaPort port;
     private List<Container> containersWarehouse = new ArrayList<>();
     private ShipState shipState;
 
     private Lock lock = new ReentrantLock(true);
 
-    public Ship(Long id, int containerCapacity, ShipState shipState,  SeaPort port) {
+    public Ship(Long id, int capacity, List<Container> containersOnBoard, ShipState shipState) {
         this.id = id;
-        this.containerCapacity = containerCapacity;
+        this.capacity = capacity;
+        this.containersWarehouse = containersOnBoard;
         this.shipState = shipState;
-        this.port = port;
     }
 
     public Long getId() {
@@ -37,8 +38,14 @@ public class Ship implements Callable<ShipReport> {
         return lock;
     }
 
+//    @Override
+//    public ShipReport call() throws InterruptedException {
+//        return port.shipService(this);
+//    }
+
     @Override
     public ShipReport call() throws InterruptedException {
+        port = SeaPort.getInstance();
         return port.shipService(this);
     }
 
@@ -58,11 +65,19 @@ public class Ship implements Callable<ShipReport> {
 
     }
 
+    public int getCapacity() {
+        return capacity;
+    }
+
     public ShipState getShipState() {
         return shipState;
     }
 
     public void setShipState(ShipState shipState) {
         this.shipState = shipState;
+    }
+
+    public int getContainersOnBoard() {
+        return containersOnBoard;
     }
 }
