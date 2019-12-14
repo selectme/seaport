@@ -21,9 +21,6 @@ public class LoaderReport {
     }
 
 
-
-
-
     @Override
     public String toString() {
         return "Ship # " + shipId + " left the warehouse";

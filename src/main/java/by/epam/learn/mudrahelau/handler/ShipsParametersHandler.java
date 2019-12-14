@@ -24,6 +24,7 @@ public class ShipsParametersHandler {
             List<Container> containers = new ArrayList<>();
             int containersCapacity = Integer.parseInt(params[1].trim());
             int containersOnBoard = Integer.parseInt(params[2].trim());
+
             if (containersOnBoard > 0) {
                 for (int i = 0; i < containersOnBoard; i++) {
                     containers.add(new Container());

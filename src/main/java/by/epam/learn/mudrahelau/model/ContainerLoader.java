@@ -2,8 +2,10 @@ package by.epam.learn.mudrahelau.model;
 
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -14,11 +16,14 @@ public class ContainerLoader {
 
     private Ship ship;
     private Lock lock = new ReentrantLock(true);
-    Warehouse warehouse;
+    private Condition condition = lock.newCondition();
 
-    public static final ContainerLoader CONTAINER_LOADER_INSTANCE = new ContainerLoader();
+    private Warehouse warehouse;
 
-    public void unloadContainersFromShip(Ship ship) {
+    private static final ContainerLoader CONTAINER_LOADER_INSTANCE = new ContainerLoader();
+
+
+    void unloadContainersFromShip(Ship ship) {
         try {
             lock.lock();
             System.out.println("Started unload containers for ship # " + ship.getId());
@@ -30,56 +35,59 @@ public class ContainerLoader {
             }
 
             warehouse = Warehouse.getInstance();
-            //копируем контейнеры с корабля, затем закидываем их в склад, а в кораблях просто удаляем их
-            List<Container> containerList = new ArrayList<>(ship.getContainersWarehouse());
-
-            for (Container container : containerList) {
-                if (warehouse.hasFreeSpace()) {
-                    warehouse.loadContainer(container);
-                    ship.getContainersWarehouse().remove(container);
+            List<Container> containersOnShip = new ArrayList<>(ship.getContainersWarehouse());
+            do {
+                if (warehouse.getContainersWarehouse().size() < warehouse.getWarehouseCapacity()
+                        && ship.getContainersWarehouse().size() > 0) {
+                    warehouse.getContainersWarehouse().add(containersOnShip.get(0));
+                    ship.getContainersWarehouse().remove(0);
                 } else {
-                    System.out.println("WAREHOUSE IS FULL");
+                    try {
+                        System.out.println("waiting for free space on the warehouse");
+                        condition.await(3, TimeUnit.SECONDS);
+
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-            System.out.println("Ship " + ship.getId() + " finished unloading.");
+            } while (ship.getContainersWarehouse().size() > 0);
+            System.out.println("unload finished");
         } finally {
+            condition.signalAll();
             lock.unlock();
         }
     }
 
-    public void loadContainersToShip(Ship ship) {
+
+    void loadContainersToShip(Ship ship) {
+
         try {
             lock.lock();
-
-            System.out.println("Started loading containers for ship # " + ship.getId());
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            System.out.println("Started load containers for ship # " + ship.getId());
+            warehouse = Warehouse.getInstance();
+            do {
+                if (warehouse.hasContainers()) {
+                    ship.loadContainer(warehouse.getContainersWarehouse().get(0));
+                    warehouse.getContainersWarehouse().remove(0);
+                } else {
+                    try {
+                        System.out.println("waiting for containers");
+                        condition.await(3, TimeUnit.SECONDS);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-
-            int numberOfContainersToLoadOnShip = ship.getCapacity();
-            List<Container> containersToLoadOnShip = new ArrayList<>();
-
-            for (int i = 0; i < numberOfContainersToLoadOnShip; i++) {
-                containersToLoadOnShip.add(warehouse.getContainersWarehouse().get(i));
-                System.out.println("container removed from warehouse");
-            }
-
-
-            for (Container container : containersToLoadOnShip) {
-                warehouse.unloadContainer(container);
-                ship.loadContainer(container);
-            }
-
-            System.out.println("Ship " + ship.getId() + " finished loading.");
+            while (ship.getCapacity() > ship.getContainersWarehouse().size());
+            System.out.println("load finished");
         } finally {
+            condition.signalAll();
             lock.unlock();
         }
-
     }
 
-    public static ContainerLoader getInstance() {
+
+    static ContainerLoader getInstance() {
         return CONTAINER_LOADER_INSTANCE;
     }
 

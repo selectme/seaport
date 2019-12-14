@@ -20,7 +20,7 @@ public class SeaPort {
     private int counter = 0;
     private List<Pier> piers = new ArrayList<>();
     private Warehouse warehouse = Warehouse.getInstance();
-    private ContainerLoader containerLoader;
+    private ContainerLoader containerLoader = ContainerLoader.getInstance();
 
     private static final SeaPort SEAPORT_INSTANCE = new SeaPort();
 
@@ -31,17 +31,25 @@ public class SeaPort {
 
     public ShipReport shipService(Ship ship) throws InterruptedException {
 
-        // три потока(корабли) одновременно заходят в порт
+        //  потоки(корабли) одновременно заходят в порт
+        Pier freePier;
+        try {
+            lock.lock();
+            System.out.println("> Ship #" + ship.getId() + " is looking for free pier...");
+            freePier = getFreePier(ship);
 
-        findFreePier(ship);
-
-        return new ShipReport(ship.getId(), counter);
+        } finally {
+            lock.unlock();
+        }
+        System.out.println("> Ship #" + ship.getId() + " has found free pier...");
+       LoaderReport report =  startLoaderWork(ship, freePier);
+        return new ShipReport(ship.getId(), counter, report);
     }
 
-    public void findFreePier(Ship ship) {
+    public Pier getFreePier(Ship ship) {
         Pier occupiedPier = null;
         boolean flag = true;
-        System.out.println("> Ship #" + ship.getId() + " is looking for free pier...");
+
         do {
             for (Pier pier : piers) {
                 if (pier.getPierState() == PierState.FREE) {
@@ -52,20 +60,12 @@ public class SeaPort {
                 }
             }
         } while (flag);
-        try {
-            occupiedPier.getLock().lock();
-
-            startLoaderWork(ship, occupiedPier);
-
-        } finally {
-            occupiedPier.getLock().unlock();
-        }
-
+        return occupiedPier;
     }
 
-
     public LoaderReport startLoaderWork(Ship ship, Pier pier) {
-        containerLoader = ContainerLoader.getInstance();
+        System.out.println("start work");
+
         try {
             TimeUnit.SECONDS.sleep(1);
         } catch (InterruptedException e) {
@@ -77,7 +77,6 @@ public class SeaPort {
             containerLoader.unloadContainersFromShip(ship);
 
         } else if (ship.getShipState() == ShipState.ON_LOAD) {
-            //здесь будет погрузка на корабль
             containerLoader.loadContainersToShip(ship);
         }
 

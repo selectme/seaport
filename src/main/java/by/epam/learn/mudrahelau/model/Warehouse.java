@@ -10,8 +10,8 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author Viktar on 09.12.2019
  */
 public class Warehouse {
-    Lock lock = new ReentrantLock(true);
-    Condition condition = lock.newCondition();
+    private Lock lock = new ReentrantLock(true);
+    private Condition condition = lock.newCondition();
     private static Warehouse warehouse;
     private static final int warehouseCapacity = 20;
     private List<Container> containersWarehouse = new ArrayList<>();
@@ -25,7 +25,7 @@ public class Warehouse {
     }
 
 
-    public static int getWarehouseCapacity() {
+    int getWarehouseCapacity() {
         return warehouseCapacity;
     }
 
@@ -45,9 +45,18 @@ public class Warehouse {
         lock.unlock();
     }
 
-    public boolean hasFreeSpace() {
-        return containersWarehouse.size() < warehouseCapacity;
+    public boolean hasFreeSpace(int numberOfContainersForLoad) {
+        return (containersWarehouse.size() + numberOfContainersForLoad) <= warehouseCapacity;
     }
+
+    public boolean hasNeededNumberContainers(int numberOfContainers) {
+        return containersWarehouse.size() >= numberOfContainers;
+    }
+
+    boolean hasContainers() {
+        return containersWarehouse.size() > 0;
+    }
+
 
     public Lock getLock() {
         return lock;

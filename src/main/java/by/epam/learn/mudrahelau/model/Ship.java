@@ -54,15 +54,15 @@ public class Ship implements Callable<ShipReport> {
     }
 
     public void loadContainer(Container container) {
-
+//        lock.lock();
         containersWarehouse.add(container);
-
+//        lock.unlock();
     }
 
     public void unloadContainer(Container container) {
-
+//        lock.lock();
         containersWarehouse.remove(container);
-
+//        lock.unlock();
     }
 
     public int getCapacity() {
@@ -79,5 +79,17 @@ public class Ship implements Callable<ShipReport> {
 
     public int getContainersOnBoard() {
         return containersOnBoard;
+    }
+
+    public boolean hasFreeSpace() {
+        return containersWarehouse.size() < capacity;
+    }
+
+    public boolean hasContainers() {
+        return containersWarehouse.size() > 0;
+    }
+
+    public int numberOfContainersToLoad(){
+       return this.capacity - this.containersWarehouse.size();
     }
 }

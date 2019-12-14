@@ -16,21 +16,20 @@ public class Main {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
 
         SeaPort port = SeaPort.getInstance();
+
         Pier pier = new Pier(1L, PierState.FREE);
         Pier pier2 = new Pier(2L, PierState.FREE);
         Pier pier3 = new Pier(3L, PierState.FREE);
-
 
         port.addPier(pier);
         port.addPier(pier2);
         port.addPier(pier3);
 
+
         List<Ship> ships = ShipsParametersHandler.getShipsList("data/ships.txt");
 
         ExecutorService executorService = Executors.newFixedThreadPool(10);
-
         List<Future<ShipReport>> futures = new ArrayList<>();
-
 
         for (int i = 0; i < ships.size(); i++) {
             Future<ShipReport> reportFuture = executorService.submit(ships.get(i));
