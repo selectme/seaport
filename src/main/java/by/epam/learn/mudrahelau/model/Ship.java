@@ -30,6 +30,12 @@ public class Ship implements Callable<ShipReport> {
         this.shipState = shipState;
     }
 
+    @Override
+    public ShipReport call() throws InterruptedException {
+        port = SeaPort.getInstance();
+        return port.shipService(this);
+    }
+
     public Long getId() {
         return id;
     }
@@ -38,16 +44,6 @@ public class Ship implements Callable<ShipReport> {
         return lock;
     }
 
-//    @Override
-//    public ShipReport call() throws InterruptedException {
-//        return port.shipService(this);
-//    }
-
-    @Override
-    public ShipReport call() throws InterruptedException {
-        port = SeaPort.getInstance();
-        return port.shipService(this);
-    }
 
     public List<Container> getContainersWarehouse() {
         return containersWarehouse;

@@ -15,7 +15,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 
 public class SeaPort {
-    private static SeaPort seaPort;
     private Lock lock = new ReentrantLock(true);
     private int counter = 0;
     private List<Pier> piers = new ArrayList<>();

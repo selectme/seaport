@@ -13,7 +13,7 @@ public class Warehouse {
     private Lock lock = new ReentrantLock(true);
     private Condition condition = lock.newCondition();
     private static Warehouse warehouse;
-    private static final int warehouseCapacity = 20;
+    private static final int warehouseCapacity = 15;
     private List<Container> containersWarehouse = new ArrayList<>();
 
 

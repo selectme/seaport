@@ -14,6 +14,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class ContainerLoader {
 
+    public static final int TIME_TO_WAIT = 3;
     private Ship ship;
     private Lock lock = new ReentrantLock(true);
     private Condition condition = lock.newCondition();
@@ -44,8 +45,9 @@ public class ContainerLoader {
                 } else {
                     try {
                         System.out.println("waiting for free space on the warehouse");
-                        condition.await(3, TimeUnit.SECONDS);
-
+                        if (!condition.await(TIME_TO_WAIT, TimeUnit.SECONDS)) {
+                            return;
+                        }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -72,7 +74,9 @@ public class ContainerLoader {
                 } else {
                     try {
                         System.out.println("waiting for containers");
-                        condition.await(3, TimeUnit.SECONDS);
+                        if (!condition.await(TIME_TO_WAIT, TimeUnit.SECONDS)) {
+                            return;
+                        }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

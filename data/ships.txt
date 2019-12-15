@@ -2,6 +2,6 @@ id    capacity    containers   state
   1  |    5     |     0      |   ON_LOAD
   2  |    5     |     0      |   ON_LOAD
   3  |    5     |     5      |   ON_UNLOAD
-  4  |    5     |     0      |   ON_LOAD
+  4  |    5     |     5      |   ON_UNLOAD
   5  |    5     |     5      |   ON_UNLOAD
   6  |    5     |     5      |   ON_UNLOAD

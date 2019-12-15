@@ -3,7 +3,6 @@ package by.epam.learn.mudrahelau;
 import by.epam.learn.mudrahelau.handler.ShipsParametersHandler;
 import by.epam.learn.mudrahelau.model.*;
 import by.epam.learn.mudrahelau.states.PierState;
-import by.epam.learn.mudrahelau.states.ShipState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +27,11 @@ public class Main {
 
         List<Ship> ships = ShipsParametersHandler.getShipsList("data/ships.txt");
 
-        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        ExecutorService executorService = Executors.newFixedThreadPool(5);
         List<Future<ShipReport>> futures = new ArrayList<>();
 
-        for (int i = 0; i < ships.size(); i++) {
-            Future<ShipReport> reportFuture = executorService.submit(ships.get(i));
+        for (Ship shipReport : ships) {
+            Future<ShipReport> reportFuture = executorService.submit(shipReport);
             futures.add(reportFuture);
         }
 
