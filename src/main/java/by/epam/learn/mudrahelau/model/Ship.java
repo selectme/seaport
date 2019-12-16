@@ -47,11 +47,20 @@ public class Ship implements Callable<ShipReport> {
         return port.shipService(this);
     }
 
-
+    /**
+     * Puts a container in the container's warehouse in the ship.
+     *
+     * @param container {@link Container}
+     */
     public void loadContainer(Container container) {
         containersWarehouse.add(container);
     }
 
+    /**
+     * Removes a container from the ship.
+     *
+     * @param container {@link Container}
+     */
     public void unloadContainer(Container container) {
         containersWarehouse.remove(container);
     }

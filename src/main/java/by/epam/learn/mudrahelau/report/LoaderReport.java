@@ -3,11 +3,20 @@ package by.epam.learn.mudrahelau.report;
 import by.epam.learn.mudrahelau.model.Ship;
 
 /**
+ * {@link by.epam.learn.mudrahelau.model.ContainerLoader} progress report.
+ *
  * @author Viktar on 11.12.2019
  */
 public class LoaderReport {
 
+    /**
+     * {@link Ship}
+     */
     private Ship ship;
+
+    /**
+     * Number of processed containers.
+     */
     private int containersProcessed;
 
     public LoaderReport(Ship ship, int containersProcessed) {
