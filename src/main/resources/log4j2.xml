@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="consoleLog" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+        <Console name="systemoutconsol" target="SYSTEM_OUT">
+            <PatternLayout pattern="%msg%n"/>
+        </Console>
+        <File name="fileLog" filename="logs/logs.log" immediateFlush="true">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <!-- avoid duplicated logs with additivity=false -->
+        <Logger name="myLogger" level="trace" additivity="true">
+            <AppenderRef ref="consoleLog"/>
+            <AppenderRef ref="fileLog"/>
+        </Logger>
+        <Root level="all">
+            <AppenderRef ref="systemoutconsol"/>
+            <AppenderRef ref="fileLog"/>
+        </Root>
+
+    </Loggers>
+</Configuration>

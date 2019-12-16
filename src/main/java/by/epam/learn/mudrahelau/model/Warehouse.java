@@ -12,20 +12,17 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Warehouse {
     private Lock lock = new ReentrantLock(true);
     private Condition condition = lock.newCondition();
-    private static Warehouse warehouse;
+    private static final Warehouse WAREHOUSE_INSTANCE = new Warehouse();
     private static final int warehouseCapacity = 15;
     private List<Container> containersWarehouse = new ArrayList<>();
 
 
     public static Warehouse getInstance() {
-        if (warehouse == null) {
-            warehouse = new Warehouse();
-        }
-        return warehouse;
+        return WAREHOUSE_INSTANCE;
     }
 
 
-    int getWarehouseCapacity() {
+   public int getWarehouseCapacity() {
         return warehouseCapacity;
     }
 
@@ -53,7 +50,7 @@ public class Warehouse {
         return containersWarehouse.size() >= numberOfContainers;
     }
 
-    boolean hasContainers() {
+    public boolean hasContainers() {
         return containersWarehouse.size() > 0;
     }
 

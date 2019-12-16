@@ -2,6 +2,8 @@ package by.epam.learn.mudrahelau.model;
 
 import by.epam.learn.mudrahelau.states.PierState;
 import by.epam.learn.mudrahelau.states.ShipState;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +22,7 @@ public class SeaPort {
     private List<Pier> piers = new ArrayList<>();
     private Warehouse warehouse = Warehouse.getInstance();
     private ContainerLoader containerLoader = ContainerLoader.getInstance();
+    private static final Logger LOGGER = LogManager.getLogger(SeaPort.class);
 
     private static final SeaPort SEAPORT_INSTANCE = new SeaPort();
 
@@ -34,14 +37,14 @@ public class SeaPort {
         Pier freePier;
         try {
             lock.lock();
-            System.out.println("> Ship #" + ship.getId() + " is looking for free pier...");
+            LOGGER.info("> Ship #" + ship.getId() + " is looking for free pier...");
             freePier = getFreePier(ship);
 
         } finally {
             lock.unlock();
         }
-        System.out.println("> Ship #" + ship.getId() + " has found free pier...");
-       LoaderReport report =  startLoaderWork(ship, freePier);
+        LOGGER.info("> Ship #" + ship.getId() + " has found free pier...");
+        LoaderReport report = startLoaderWork(ship, freePier);
         return new ShipReport(ship.getId(), counter, report);
     }
 
@@ -63,7 +66,7 @@ public class SeaPort {
     }
 
     public LoaderReport startLoaderWork(Ship ship, Pier pier) {
-        System.out.println("start work");
+        LOGGER.info("start work");
 
         try {
             TimeUnit.SECONDS.sleep(1);
@@ -72,11 +75,12 @@ public class SeaPort {
         }
         //  если у корабля статус "На разгрузку", то перекидываем контейнеры с корабля на склад.
         if (ship.getShipState() == ShipState.ON_UNLOAD) {
-
-            containerLoader.unloadContainersFromShip(ship);
+                containerLoader.getContainerLoaderService().unloadContainersFromShip(ship);
+//            containerLoader.unloadContainersFromShip(ship);
 
         } else if (ship.getShipState() == ShipState.ON_LOAD) {
-            containerLoader.loadContainersToShip(ship);
+//            containerLoader.loadContainersToShip(ship);
+            containerLoader.getContainerLoaderService().loadContainersToShip(ship);
         }
 
         pier.setPierState(PierState.FREE);

@@ -15,7 +15,7 @@ public class InputParametersParser {
     public static List<String> shipsParameters(String filePath) {
         List<String> parameters = new ArrayList<>();
         try {
-            parameters = Files.readAllLines(Paths.get("data/ships.txt"));
+            parameters = Files.readAllLines(Paths.get(filePath));
         } catch (IOException e) {
             e.printStackTrace();
         }
