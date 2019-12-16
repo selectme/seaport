@@ -2,6 +2,7 @@ package by.epam.learn.mudrahelau;
 
 import by.epam.learn.mudrahelau.parser.ShipsParametersParser;
 import by.epam.learn.mudrahelau.model.*;
+import by.epam.learn.mudrahelau.report.ShipReport;
 import by.epam.learn.mudrahelau.states.PierState;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

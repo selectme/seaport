@@ -1,6 +1,4 @@
-package by.epam.learn.mudrahelau.model;
-
-import java.time.LocalTime;
+package by.epam.learn.mudrahelau.report;
 
 /**
  * @author Viktar on 09.12.2019

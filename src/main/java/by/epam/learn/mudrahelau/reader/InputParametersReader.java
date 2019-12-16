@@ -7,10 +7,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Reader for data from file.
+ *
  * @author Viktar on 13.12.2019
  */
 public class InputParametersReader {
 
+    /**
+     * Read parameters from file and puts them into the list.
+     *
+     * @param filePath path to the file.
+     * @return list of parameters.
+     */
     public static List<String> shipsParameters(String filePath) {
         List<String> parameters = new ArrayList<>();
         try {

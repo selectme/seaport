@@ -1,8 +1,9 @@
 package by.epam.learn.mudrahelau.model;
 
+import by.epam.learn.mudrahelau.report.LoaderReport;
+import by.epam.learn.mudrahelau.report.ShipReport;
 import by.epam.learn.mudrahelau.service.ContainerLoaderService;
 import by.epam.learn.mudrahelau.service.PierService;
-import by.epam.learn.mudrahelau.states.ShipState;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

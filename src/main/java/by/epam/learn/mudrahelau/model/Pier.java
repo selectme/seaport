@@ -6,12 +6,20 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
+ * Model object that represents a pier.
+ *
  * @author Viktar on 09.12.2019
  */
 public class Pier {
-
+    /**
+     * Pier's identification number.
+     */
     private Long id;
+    /**
+     * {@link PierState}
+     */
     private PierState pierState;
+
     private Lock lock = new ReentrantLock(true);
 
     public Pier(Long id, PierState pierState) {
