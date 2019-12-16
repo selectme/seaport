@@ -1,8 +1,8 @@
-package by.epam.learn.mudrahelau.handler;
+package by.epam.learn.mudrahelau.parser;
 
 import by.epam.learn.mudrahelau.model.Container;
 import by.epam.learn.mudrahelau.model.Ship;
-import by.epam.learn.mudrahelau.parser.InputParametersParser;
+import by.epam.learn.mudrahelau.reader.InputParametersReader;
 import by.epam.learn.mudrahelau.states.ShipState;
 
 import java.util.ArrayList;
@@ -11,13 +11,13 @@ import java.util.List;
 /**
  * @author Viktar on 13.12.2019
  */
-public class ShipsParametersHandler {
+public class ShipsParametersParser {
 
     private static final String SPLITTER = "\\|";
 
     public static List<Ship> getShipsList(String filepath) {
 
-        List<String> parameters = InputParametersParser.shipsParameters(filepath);
+        List<String> parameters = InputParametersReader.shipsParameters(filepath);
 
         List<Ship> ships = new ArrayList<>();
 

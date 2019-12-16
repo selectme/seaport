@@ -8,14 +8,14 @@ import java.time.LocalTime;
 public class ShipReport {
 
     private long shipId;
-    private int processingNumber;
+
     private LoaderReport loaderReport;
 
-    public ShipReport(long shipId, int processingNumber, LoaderReport loaderReport) {
-        this.shipId = shipId;
-        this.processingNumber = processingNumber;
-        this.loaderReport = loaderReport;
 
+
+    public ShipReport(long shipId, LoaderReport loaderReport) {
+        this.shipId = shipId;
+        this.loaderReport = loaderReport;
     }
 
     public long getShipId() {
@@ -26,6 +26,6 @@ public class ShipReport {
     @Override
     public String toString() {
         return "ShipReport: " +
-                "Ship №" + shipId + " processed. " + loaderReport.toString();
+                "Ship #" + shipId + " processed. " + loaderReport.toString();
     }
 }

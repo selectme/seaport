@@ -1,6 +1,5 @@
-package by.epam.learn.mudrahelau.parser;
+package by.epam.learn.mudrahelau.reader;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -10,7 +9,7 @@ import java.util.List;
 /**
  * @author Viktar on 13.12.2019
  */
-public class InputParametersParser {
+public class InputParametersReader {
 
     public static List<String> shipsParameters(String filePath) {
         List<String> parameters = new ArrayList<>();

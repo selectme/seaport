@@ -5,5 +5,11 @@ package by.epam.learn.mudrahelau.model;
  */
 public class Container {
 
+    public Container() {
+    }
 
+    @Override
+    public String toString() {
+        return "Container";
+    }
 }

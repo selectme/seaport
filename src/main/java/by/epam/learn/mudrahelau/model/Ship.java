@@ -15,10 +15,8 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Ship implements Callable<ShipReport> {
 
     private Long id;
-    private int containersOnBoard;
     private int capacity;
-    private SeaPort port;
-    private List<Container> containersWarehouse = new ArrayList<>();
+    private List<Container> containersWarehouse;
     private ShipState shipState;
 
     private Lock lock = new ReentrantLock(true);
@@ -32,7 +30,7 @@ public class Ship implements Callable<ShipReport> {
 
     @Override
     public ShipReport call() throws InterruptedException {
-        port = SeaPort.getInstance();
+        SeaPort port = SeaPort.getInstance();
         return port.shipService(this);
     }
 
@@ -50,15 +48,11 @@ public class Ship implements Callable<ShipReport> {
     }
 
     public void loadContainer(Container container) {
-//        lock.lock();
         containersWarehouse.add(container);
-//        lock.unlock();
     }
 
     public void unloadContainer(Container container) {
-//        lock.lock();
         containersWarehouse.remove(container);
-//        lock.unlock();
     }
 
     public int getCapacity() {
@@ -73,9 +67,6 @@ public class Ship implements Callable<ShipReport> {
         this.shipState = shipState;
     }
 
-    public int getContainersOnBoard() {
-        return containersOnBoard;
-    }
 
     public boolean hasFreeSpace() {
         return containersWarehouse.size() < capacity;
@@ -85,7 +76,5 @@ public class Ship implements Callable<ShipReport> {
         return containersWarehouse.size() > 0;
     }
 
-    public int numberOfContainersToLoad(){
-       return this.capacity - this.containersWarehouse.size();
-    }
+
 }
