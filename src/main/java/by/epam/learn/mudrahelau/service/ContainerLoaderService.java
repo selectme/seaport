@@ -47,7 +47,6 @@ public class ContainerLoaderService {
      * @return {@link LoaderReport} - progress report
      */
     public LoaderReport startLoaderWork(Ship ship, Pier pier) {
-
         int containersProcessed = 0;
 
         if (ship.getShipState() == ShipState.ON_UNLOAD) {
@@ -138,6 +137,7 @@ public class ContainerLoaderService {
         }
         return containersProcessed;
     }
+
 
     static ContainerLoader getInstance() {
         return CONTAINER_LOADER_INSTANCE;
